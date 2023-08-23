@@ -53,15 +53,14 @@ namespace UnityRoyale
 		{
             while(act)
             {
-			    yield return new WaitForSeconds(opponentLoopTime);
-
-
                 if(OnCardUsed != null)
 				{
 					Vector3 newPos = new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(3f, 8.5f));
                     OnCardUsed(aiDeck.GetNextCardFromDeck(), newPos, Placeable.Faction.Opponent);
 				}
+                yield return new WaitForSeconds(opponentLoopTime);
+
             }
-		}
+        }
 	}
 }

@@ -41,7 +41,8 @@ namespace UnityRoyale
 
 		public void OnRetryButton()
 		{
-			UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+			LaunchSettingsManager.Instance.ReturnToLaunch();
+			//UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
 		}
 
 		private void LateUpdate()

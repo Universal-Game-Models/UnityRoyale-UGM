@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,6 +14,8 @@ namespace UnityRoyale
 
         private Animator animator;
         private NavMeshAgent navMeshAgent;
+        private UGM.Core.UGMDownloader downloader;
+        private PlaceableData data;
 
         private void Awake()
         {
@@ -22,12 +25,23 @@ namespace UnityRoyale
             animator = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>(); //will be disabled until Activate is called
 			audioSource = GetComponent<AudioSource>();
+            downloader = GetComponent<UGM.Core.UGMDownloader>();
+            if(downloader) downloader.onModelSuccess.AddListener(ActivateLate);
+        }
+        private void OnDestroy()
+        {
+            if (downloader) downloader.onModelSuccess.RemoveListener(ActivateLate);
+        }
+        private void ActivateLate(GameObject arg0)
+        {
+            Activate(faction, data);
         }
 
         //called by GameManager when this Unit is played on the play field
         public void Activate(Faction pFaction, PlaceableData pData)
         {
             faction = pFaction;
+            data = pData;
             hitPoints = pData.hitPoints;
             targetType = pData.targetType;
             attackRange = pData.attackRange;
@@ -39,7 +53,7 @@ namespace UnityRoyale
             //TODO: add more as necessary
             
             navMeshAgent.speed = speed;
-            animator.SetFloat("MoveSpeed", speed); //will act as multiplier to the speed of the run animation clip
+            if (animator || TryGetComponent(out animator)) animator.SetFloat("MoveSpeed", speed); //will act as multiplier to the speed of the run animation clip
 
             state = States.Idle;
             navMeshAgent.enabled = true;
@@ -60,7 +74,7 @@ namespace UnityRoyale
 
             navMeshAgent.SetDestination(target.transform.position);
             navMeshAgent.isStopped = false;
-            animator.SetBool("IsMoving", true);
+            if (animator || TryGetComponent(out animator)) animator.SetBool("IsMoving", true);
         }
 
 		//Unit has gotten to its target. This function puts it in "attack mode", but doesn't delive any damage (see DealBlow)
@@ -69,7 +83,7 @@ namespace UnityRoyale
             base.StartAttack();
 
             navMeshAgent.isStopped = true;
-            animator.SetBool("IsMoving", false);
+            if (animator || TryGetComponent(out animator)) animator.SetBool("IsMoving", false);
         }
 
 		//Starts the attack animation, and is repeated according to the Unit's attackRatio
@@ -77,7 +91,7 @@ namespace UnityRoyale
         {
             base.DealBlow();
 
-            animator.SetTrigger("Attack");
+            if (animator || TryGetComponent(out animator)) animator.SetTrigger("Attack");
             transform.forward = (target.transform.position - transform.position).normalized; //turn towards the target
         }
 
@@ -86,7 +100,7 @@ namespace UnityRoyale
 			base.Stop();
 
 			navMeshAgent.isStopped = true;
-			animator.SetBool("IsMoving", false);
+            if (animator || TryGetComponent(out animator)) animator.SetBool("IsMoving", false);
 		}
 
         protected override void Die()
@@ -94,7 +108,7 @@ namespace UnityRoyale
             base.Die();
 
             navMeshAgent.enabled = false;
-            animator.SetTrigger("IsDead");
+            if (animator || TryGetComponent(out animator)) animator.SetTrigger("IsDead");
         }
     }
 }
