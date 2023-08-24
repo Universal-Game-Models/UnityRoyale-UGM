@@ -202,7 +202,7 @@ namespace UnityRoyale
                 Quaternion rot = (pFaction == Placeable.Faction.Player) ? Quaternion.identity : Quaternion.Euler(0f, 180f, 0f);
                 //Prefab to spawn is the associatedPrefab if it's the Player faction, otherwise it's alternatePrefab. But if alternatePrefab is null, then first one is taken
                 GameObject prefabToSpawn = (pFaction == Placeable.Faction.Player) ? pDataRef.associatedPrefab : ((pDataRef.alternatePrefab == null) ? pDataRef.associatedPrefab : pDataRef.alternatePrefab);
-                GameObject newPlaceableGO = Instantiate<GameObject>(prefabToSpawn, position + cardData.relativeOffsets[pNum], rot);
+                GameObject newPlaceableGO = Lean.Pool.LeanPool.Spawn(prefabToSpawn, position + cardData.relativeOffsets[pNum], rot);
                 
                 SetupPlaceable(newPlaceableGO, pDataRef, pFaction);
 
@@ -355,7 +355,7 @@ namespace UnityRoyale
 		{
 			yield return new WaitForSeconds(3f);
 
-			Destroy(p.gameObject);
+			Lean.Pool.LeanPool.Despawn(p.gameObject);
 		}
 
         private IEnumerator RebuildNavmesh()

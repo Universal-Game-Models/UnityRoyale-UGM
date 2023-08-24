@@ -118,10 +118,13 @@ namespace UGM.Examples.Inventory
         /// </summary>
         protected void ClearDisplay()
         {
-            int childCount = content.childCount;
-            for (int i = 0; i < childCount; i++)
+            if (content)
             {
-                Destroy(content.GetChild(i).gameObject);
+                int childCount = content.childCount;
+                for (int i = 0; i < childCount; i++)
+                {
+                    Destroy(content.GetChild(i).gameObject);
+                }
             }
         }
 
