@@ -20,7 +20,9 @@ MonoBehaviour:
   attackRatio: 1
   damagePerAttack: 5
   attackRange: 3
-  hitPoints: 5
+  hitPoints: 25
+  attackClip: {fileID: 0}
+  dieClip: {fileID: 0}
   speed: 0
   lifeTime: 0
   damagePerSecond: 0

@@ -126,7 +126,7 @@ namespace UnityRoyale
                     //spawn all the preview Placeables and parent them to the cardPreview
                     for(int i=0; i<dataToSpawn.Length; i++)
                     {
-                        GameObject newPlaceable = GameObject.Instantiate<GameObject>(dataToSpawn[i].associatedPrefab,
+                        GameObject newPlaceable = Lean.Pool.LeanPool.Spawn(dataToSpawn[i].associatedPrefab,
                                                                                     hit.point + offsets[i] + inputCreationOffset,
                                                                                     Quaternion.identity,
                                                                                     previewHolder.transform);
@@ -174,6 +174,7 @@ namespace UnityRoyale
             }
 
 			forbiddenAreaRenderer.enabled = false;
+            ClearPreviewObjects();
         }
 
         //happens when the card is put down on the playing field, and while dragging (when moving out of the play field)
@@ -182,7 +183,7 @@ namespace UnityRoyale
             //destroy all the preview Placeables
             for(int i=0; i<previewHolder.transform.childCount; i++)
             {
-                Destroy(previewHolder.transform.GetChild(i).gameObject);
+                Lean.Pool.LeanPool.Despawn(previewHolder.transform.GetChild(i).gameObject);
             }
         }
     }

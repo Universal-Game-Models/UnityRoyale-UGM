@@ -30,8 +30,10 @@ namespace UnityRoyale
 		public void RemoveHealthUI(ThinkingPlaceable p)
 		{
 			healthBars.Remove(p.healthBar);
-			
-			Destroy(p.healthBar.gameObject);
+			if (p && p.healthBar && p.healthBar.gameObject)
+			{
+				Destroy(p.healthBar.gameObject);
+			}
 		}
 
 		public void ShowGameOverUI()
@@ -41,7 +43,8 @@ namespace UnityRoyale
 
 		public void OnRetryButton()
 		{
-			UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+			LaunchSettingsManager.Instance.ReturnToLaunch();
+			//UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
 		}
 
 		private void LateUpdate()

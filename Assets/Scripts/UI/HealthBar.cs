@@ -35,7 +35,7 @@ namespace UnityRoyale
         {
             if(isHidden)
             {
-                wholeWidget.SetActive(true);
+                if(wholeWidget) wholeWidget.SetActive(true);
                 isHidden = false;
             }
 
@@ -45,7 +45,7 @@ namespace UnityRoyale
                 ratio = newHP/originalHP;
             }
 
-            bar.localScale = new Vector3(ratio, 1f, 1f);
+            if(bar) bar.localScale = new Vector3(ratio, 1f, 1f);
         }
 
         public void Move()
