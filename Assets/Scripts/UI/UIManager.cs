@@ -30,7 +30,7 @@ namespace UnityRoyale
 		public void RemoveHealthUI(ThinkingPlaceable p)
 		{
 			healthBars.Remove(p.healthBar);
-			if (p?.healthBar?.gameObject)
+			if (p && p.healthBar && p.healthBar.gameObject)
 			{
 				Destroy(p.healthBar.gameObject);
 			}
