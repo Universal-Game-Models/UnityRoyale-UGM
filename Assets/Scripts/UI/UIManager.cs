@@ -43,10 +43,13 @@ namespace UnityRoyale
 
 		public void OnRetryButton()
 		{
-			LaunchSettingsManager.Instance.ReturnToLaunch();
-			//UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+			Lean.Pool.LeanPool.DespawnAll();
+			UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
 		}
-
+		public void OnExitButton()
+		{
+			LaunchSettingsManager.Instance.ReturnToLaunch();
+		}
 		private void LateUpdate()
 		{
 			for(int i=0; i<healthBars.Count; i++)

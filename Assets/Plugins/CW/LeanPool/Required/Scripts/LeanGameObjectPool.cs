@@ -499,6 +499,12 @@ namespace Lean.Pool
 		[ContextMenu("Preload All")]
 		public void PreloadAll()
 		{
+			//Preload the children as clones
+            for (int i = 0; i < transform.childCount; i++)
+            {
+				despawnedClones.Add(transform.GetChild(i).gameObject);
+			}
+
 			if (preload > 0)
 			{
 				if (prefab != null)

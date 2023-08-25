@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UGM.Examples.Inventory;
 using UGM.Examples.ThirdPersonController;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UnityRoyale
 {
@@ -30,11 +32,17 @@ namespace UnityRoyale
         public AvatarLoader avatarLoader;
         public HumanoidEquipmentLoader equipmentLoader;
 
+        public GameObject LoadingScreen;
+        public Image LoadingImage;
+
         public GameObject CardsGO;
         public GameObject AvatarGO;
         public GameObject AvatarUIGO;
         public GameObject EquipUIGO;
-        
+
+        public GameObject[] pools;
+        public CharacterSettingsLoader[] preloadedCharacters;
+
         public PlayerSettings settings;
 
         private CharacterSettings selectedSettings;
@@ -49,6 +57,8 @@ namespace UnityRoyale
             }
             else
             {
+                Instance.pools = pools;
+                Instance.preloadedCharacters = preloadedCharacters;
                 Destroy(gameObject);
             }
         }
@@ -146,16 +156,44 @@ namespace UnityRoyale
 
         public void ReturnToLaunch()
         {
+            //Always refresh the pools
+            foreach (var pool in pools)
+            {
+                DestroyImmediate(pool);
+            }
             SceneManager.LoadScene("Launch");
             CardsGO.SetActive(true);
         }
 
-        public void PlayGame()
+        public async void PlayGame()
         {
-            CardsGO.SetActive(false);
-            AvatarGO.SetActive(false);
-            AvatarUIGO.SetActive(false);
-            EquipUIGO.SetActive(false);
+            LoadingScreen.SetActive(true);
+            var current = 0;
+            var total = 0;
+            var simultaneousMax = 3;
+            List<Task> tasks = new List<Task>();
+            foreach (var character in preloadedCharacters)
+            {
+                CardsGO.SetActive(false);
+                AvatarGO.SetActive(false);
+                AvatarUIGO.SetActive(false);
+                EquipUIGO.SetActive(false);
+                if (character.isPreload)
+                {
+                    current++;
+                    total++;
+                    tasks.Add(character.SetupAvatar());
+                    LoadingImage.fillAmount = (float)total / (float)preloadedCharacters.Length;
+                }
+                if (current == simultaneousMax)
+                {
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                    current = 0;
+                }
+            }
+
+            LoadingScreen.SetActive(false);
             SceneManager.LoadScene("Main");
         }
     }
