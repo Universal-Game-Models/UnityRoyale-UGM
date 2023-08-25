@@ -77,8 +77,19 @@ namespace UnityRoyale
 				StartMatch();
         }
 
-		//called by the intro cutscene
-		public void StartMatch()
+        private void OnDestroy()
+        {
+            foreach (var unit in allThinkingPlaceables)
+            {
+                unit.OnDie -= OnPlaceableDead;
+                unit.OnDealDamage -= OnPlaceableDealtDamage;
+                unit.OnProjectileFired -= OnProjectileFired;
+                UIManager.RemoveHealthUI(unit);
+            }
+        }
+
+        //called by the intro cutscene
+        public void StartMatch()
 		{
 			CPUOpponent.StartActing();
 		}

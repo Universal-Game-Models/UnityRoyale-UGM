@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UGM.Examples.ThirdPersonController;
 using UnityEngine;
 
@@ -9,14 +10,15 @@ namespace UnityRoyale
         public AvatarLoader avatarLoader;
         public HumanoidEquipmentLoader equipmentLoader;
 
+        public bool isPreload;
         private bool isLoaded;
 
         private void Start()
         {
-            SetupAvatar();
+            if(!isPreload && !isLoaded) SetupAvatar();
         }
 
-        private async void SetupAvatar()
+        public async Task SetupAvatar()
         {
             if (!isLoaded)
             {
@@ -41,6 +43,10 @@ namespace UnityRoyale
                     await avatarLoader.LoadAsync(LaunchSettingsManager.Instance.settings.mage.avatarId);
                     //Set the weapon id to load after the avatar
                     await equipmentLoader.LoadAsync(LaunchSettingsManager.Instance.settings.mage.weaponId);
+                }
+                if (isPreload)
+                {
+                    gameObject.SetActive(false);
                 }
             }
         }
